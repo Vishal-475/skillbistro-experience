@@ -3,6 +3,7 @@ import React from 'react';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 interface FeatureCardProps {
   icon: LucideIcon;
@@ -48,7 +49,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
       <h3 className="text-xl font-semibold mb-2 tracking-tight">{title}</h3>
       <p className="text-sm text-gray-600 mb-4 text-balance">{description}</p>
       
-      <a href={linkHref} className="w-full block">
+      <Link to={linkHref} className="w-full block">
         <Button variant="outline" className="w-full justify-start mt-2 group/btn">
           <span className="mr-auto">Explore</span>
           <svg
@@ -67,7 +68,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
             <path d="m12 5 7 7-7 7" />
           </svg>
         </Button>
-      </a>
+      </Link>
     </div>
   );
 };

@@ -70,10 +70,10 @@ const Footer = () => {
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4">Features</h4>
             <ul className="space-y-2">
-              <li><a href="#skill-swap" className="text-gray-500 hover:text-skillbistro-blue text-sm transition-colors">Skill Swap</a></li>
-              <li><a href="#food-discovery" className="text-gray-500 hover:text-skillbistro-blue text-sm transition-colors">Food Discovery</a></li>
-              <li><a href="#budget" className="text-gray-500 hover:text-skillbistro-blue text-sm transition-colors">Budget Structuring</a></li>
-              <li><a href="#career-path" className="text-gray-500 hover:text-skillbistro-blue text-sm transition-colors">Career Path Guidance</a></li>
+              <li><Link to="/skillswap" className="text-gray-500 hover:text-skillbistro-blue text-sm transition-colors">Skill Swap</Link></li>
+              <li><Link to="/food-discovery" className="text-gray-500 hover:text-skillbistro-blue text-sm transition-colors">Food Discovery</Link></li>
+              <li><Link to="/budget" className="text-gray-500 hover:text-skillbistro-blue text-sm transition-colors">Budget Structuring</Link></li>
+              <li><Link to="/career-path" className="text-gray-500 hover:text-skillbistro-blue text-sm transition-colors">Career Path Guidance</Link></li>
             </ul>
           </div>
 
