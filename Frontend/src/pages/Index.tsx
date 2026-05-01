@@ -6,9 +6,11 @@ import ThreeJSBackground from '@/components/ThreeJSBackground';
 import FeatureCard from '@/components/FeatureCard';
 import Footer from '@/components/Footer';
 import { RefreshCw, Utensils, PiggyBank, Briefcase } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <ThreeJSBackground />
@@ -59,9 +61,11 @@ const Index = () => {
                     <p className="text-gray-600">Scheduling integration for seamless booking</p>
                   </div>
                 </div>
-                <Button className="bg-skillbistro-blue hover:bg-skillbistro-blue/90 text-white">
-                  Start Swapping Skills
-                </Button>
+                <Link to="/skillswap">
+                  <Button className="bg-skillbistro-blue hover:bg-skillbistro-blue/90 text-white">
+                    Start Swapping Skills
+                  </Button>
+                </Link>
               </div>
               
               <div className="rounded-3xl overflow-hidden shadow-2xl bg-white p-6 animate-fade-in relative">
@@ -142,7 +146,7 @@ const Index = () => {
                 description="Exchange knowledge and skills with other students using our AI-powered matching system."
                 iconClassName="bg-skillbistro-blue/10 text-skillbistro-blue"
                 index={0}
-                linkHref="#skill-swap"
+                linkHref="/skillswap"
               />
               
               <FeatureCard
@@ -151,7 +155,7 @@ const Index = () => {
                 description="Find, recommend, and explore student-friendly food spots based on your preferences and budget."
                 iconClassName="bg-skillbistro-orange/10 text-skillbistro-orange"
                 index={1}
-                linkHref="#food-discovery"
+                linkHref="/food-discovery"
               />
               
               <FeatureCard
@@ -160,7 +164,7 @@ const Index = () => {
                 description="Track expenses, set savings goals, and get AI-powered financial recommendations."
                 iconClassName="bg-skillbistro-green/10 text-skillbistro-green"
                 index={2}
-                linkHref="#budget"
+                linkHref="/budget"
               />
               
               <FeatureCard
@@ -169,7 +173,7 @@ const Index = () => {
                 description="Get personalized career advice, resume feedback, and connect with industry mentors."
                 iconClassName="bg-skillbistro-purple/10 text-skillbistro-purple"
                 index={3}
-                linkHref="#career-path"
+                linkHref="/career-path"
               />
             </div>
           </div>
@@ -265,9 +269,11 @@ const Index = () => {
                     <p className="text-gray-600">Community reviews and trending spots</p>
                   </div>
                 </div>
-                <Button className="bg-skillbistro-orange hover:bg-skillbistro-orange/90 text-white">
-                  Explore Food Map
-                </Button>
+                <Link to="/food-discovery">
+                  <Button className="bg-skillbistro-orange hover:bg-skillbistro-orange/90 text-white">
+                    Explore Food Map
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -313,9 +319,11 @@ const Index = () => {
                     <p className="text-gray-600">Visual finance dashboard</p>
                   </div>
                 </div>
-                <Button className="bg-skillbistro-green hover:bg-skillbistro-green/90 text-white">
-                  Start Budgeting
-                </Button>
+                <Link to="/budget">
+                  <Button className="bg-skillbistro-green hover:bg-skillbistro-green/90 text-white">
+                    Start Budgeting
+                  </Button>
+                </Link>
               </div>
               
               <div className="rounded-3xl overflow-hidden shadow-xl bg-white p-6 animate-fade-in">
@@ -494,9 +502,11 @@ const Index = () => {
                     <p className="text-gray-600">Mentorship matching with professionals</p>
                   </div>
                 </div>
-                <Button className="bg-skillbistro-purple hover:bg-skillbistro-purple/90 text-white">
-                  Explore Career Paths
-                </Button>
+                <Link to="/career-path">
+                  <Button className="bg-skillbistro-purple hover:bg-skillbistro-purple/90 text-white">
+                    Explore Career Paths
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -517,7 +527,7 @@ const Index = () => {
                   <Button 
                     size="lg" 
                     className="bg-skillbistro-blue hover:bg-skillbistro-blue/90 text-white shadow-sm min-w-[180px]"
-                    onClick={() => window.location.href = '/login'}
+                    onClick={() => navigate('/login')}
                   >
                     Get Started for Free
                   </Button>

@@ -8,21 +8,62 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ThreeJSBackground from '@/components/ThreeJSBackground';
 import { LogIn, UserPlus, ArrowLeft } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { signIn, signUp } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>("login");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate login/signup process
-    setTimeout(() => {
-      setIsLoading(false);
+    const { error } = await signIn(email, password);
+    setIsLoading(false);
+
+    if (error) {
+      toast({
+        title: "Login failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully logged in.",
+      });
       navigate('/');
-    }, 1500);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    const { error } = await signUp(email, password, firstName, lastName);
+    setIsLoading(false);
+
+    if (error) {
+      toast({
+        title: "Sign up failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Account created!",
+        description: "You have successfully signed up. Please log in.",
+      });
+      setActiveTab("login");
+    }
   };
   
   return (
@@ -73,7 +114,7 @@ const Login = () => {
             </TabsList>
             
             <TabsContent value="login" className="space-y-4">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleLogin}>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
@@ -81,6 +122,8 @@ const Login = () => {
                       id="email"
                       type="email"
                       placeholder="name@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                       className="bg-white/50 focus:bg-white transition-colors"
                     />
@@ -98,6 +141,8 @@ const Login = () => {
                     <Input
                       id="password"
                       type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       required
                       className="bg-white/50 focus:bg-white transition-colors"
                     />
@@ -126,13 +171,15 @@ const Login = () => {
             </TabsContent>
             
             <TabsContent value="signup" className="space-y-4">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSignUp}>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="first-name">First name</Label>
                       <Input 
                         id="first-name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                         required
                         className="bg-white/50 focus:bg-white transition-colors"
                       />
@@ -141,6 +188,8 @@ const Login = () => {
                       <Label htmlFor="last-name">Last name</Label>
                       <Input 
                         id="last-name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                         required
                         className="bg-white/50 focus:bg-white transition-colors"
                       />
@@ -152,6 +201,8 @@ const Login = () => {
                       id="email-signup"
                       type="email"
                       placeholder="name@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                       className="bg-white/50 focus:bg-white transition-colors"
                     />
@@ -161,6 +212,8 @@ const Login = () => {
                     <Input
                       id="password-signup"
                       type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       required
                       className="bg-white/50 focus:bg-white transition-colors"
                     />
