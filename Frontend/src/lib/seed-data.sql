@@ -208,32 +208,55 @@ ALTER TABLE career_matches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE learning_paths ENABLE ROW LEVEL SECURITY;
 ALTER TABLE mentors ENABLE ROW LEVEL SECURITY;
 
--- Allow public read access to shared data tables
+-- Basic Policies
+DROP POLICY IF EXISTS "Public read access" ON skills;
 CREATE POLICY "Public read access" ON skills FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON food_spots;
 CREATE POLICY "Public read access" ON food_spots FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON food_reviews;
 CREATE POLICY "Public read access" ON food_reviews FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON career_matches;
 CREATE POLICY "Public read access" ON career_matches FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON learning_paths;
 CREATE POLICY "Public read access" ON learning_paths FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON mentors;
 CREATE POLICY "Public read access" ON mentors FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON savings_challenges;
 CREATE POLICY "Public read access" ON savings_challenges FOR SELECT USING (true);
 
--- Profile policies
+-- User Policies
+DROP POLICY IF EXISTS "Users can view all profiles" ON profiles;
 CREATE POLICY "Users can view all profiles" ON profiles FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
 
--- User skills policies
+DROP POLICY IF EXISTS "Public read user_skills" ON user_skills;
 CREATE POLICY "Public read user_skills" ON user_skills FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can manage own skills" ON user_skills;
 CREATE POLICY "Users can manage own skills" ON user_skills FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete own skills" ON user_skills;
 CREATE POLICY "Users can delete own skills" ON user_skills FOR DELETE USING (auth.uid() = user_id);
 
--- Skill matches policies
+DROP POLICY IF EXISTS "Public read skill_matches" ON skill_matches;
 CREATE POLICY "Public read skill_matches" ON skill_matches FOR SELECT USING (true);
 
--- Sessions policies
+DROP POLICY IF EXISTS "Public read sessions" ON sessions;
 CREATE POLICY "Public read sessions" ON sessions FOR SELECT USING (true);
 
 -- Transactions policies
+DROP POLICY IF EXISTS "Public read transactions" ON transactions;
 CREATE POLICY "Public read transactions" ON transactions FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can insert transactions" ON transactions;
 CREATE POLICY "Users can insert transactions" ON transactions FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- ============================================
