@@ -135,7 +135,7 @@ const Index = () => {
                 Explore All Features
               </h2>
               <p className="text-lg text-gray-600">
-                SkillBistro brings together everything you need for a successful college experience
+                SkillBistro brings together everything you need for a successful experience at SRM
               </p>
             </div>
             
@@ -191,7 +191,7 @@ const Index = () => {
                 <div className="p-6 space-y-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-xl font-semibold">Campus Food Map</h3>
+                      <h3 className="text-xl font-semibold">SRM Food Map</h3>
                       <p className="text-sm text-gray-500">Discover nearby spots within your budget</p>
                     </div>
                     <div className="flex space-x-1">
@@ -203,8 +203,8 @@ const Index = () => {
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {[
-                      { name: "The Student Café", rating: "4.8", price: "$", distance: "5 min" },
-                      { name: "Campus Bistro", rating: "4.5", price: "$$", distance: "10 min" }
+                      { name: "Java Green", rating: "4.8", price: "₹", distance: "2 min" },
+                      { name: "Tech Park Canteen", rating: "4.5", price: "₹", distance: "5 min" }
                     ].map((place, i) => (
                       <div 
                         key={i}
@@ -241,7 +241,7 @@ const Index = () => {
                   Crave, Share & Explore<br />Food Spots
                 </h2>
                 <p className="text-gray-600 text-lg max-w-md">
-                  Discover student-friendly food spots, get recommendations based on your preferences, and see what's trending in your campus community.
+                  Discover student-friendly food spots, get recommendations based on your preferences, and see what's trending around SRM Kattankulathur.
                 </p>
                 <div className="space-y-4">
                   <div className="flex items-start">
@@ -343,10 +343,10 @@ const Index = () => {
                     
                     <div className="grid grid-cols-2 gap-4">
                       {[
-                        { category: "Food & Dining", amount: "$350", percent: "35%" },
-                        { category: "Rent", amount: "$600", percent: "60%" },
-                        { category: "Entertainment", amount: "$120", percent: "12%" },
-                        { category: "Books & Supplies", amount: "$80", percent: "8%" }
+                        { category: "Food & Dining", amount: "₹4500", percent: "35%" },
+                        { category: "Hostel/Rent", amount: "₹8000", percent: "60%" },
+                        { category: "Entertainment", amount: "₹1200", percent: "12%" },
+                        { category: "Books & Supplies", amount: "₹800", percent: "8%" }
                       ].map((expense, i) => (
                         <div
                           key={i}
@@ -377,13 +377,13 @@ const Index = () => {
                     <div className="p-4 rounded-xl bg-skillbistro-green/5 border border-skillbistro-green/10">
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-medium text-skillbistro-green">Coffee Break Challenge</span>
-                        <span className="text-sm">$45 / $60</span>
+                        <span className="text-sm">₹450 / ₹1500</span>
                       </div>
                       <div className="w-full h-2 bg-gray-100 rounded-full mb-3">
                         <div className="h-full bg-skillbistro-green rounded-full" style={{ width: '75%' }}></div>
                       </div>
                       <p className="text-xs text-gray-500">
-                        Skip your daily coffee 3 times a week to save $60 this month!
+                        Skip your daily cafe coffee 3 times a week to save ₹1500 this month!
                       </p>
                     </div>
                   </div>
@@ -518,7 +518,7 @@ const Index = () => {
             <div className="rounded-3xl overflow-hidden bg-gradient-to-r from-skillbistro-blue via-skillbistro-purple to-skillbistro-pink p-0.5 shadow-xl animate-fade-in">
               <div className="bg-white rounded-3xl px-8 py-14 sm:px-14">
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">
-                  Ready to Transform Your<br />College Experience?
+                  Ready to Transform Your<br />SRM Experience?
                 </h2>
                 <p className="text-gray-600 text-lg mb-8 max-w-lg mx-auto">
                   Join thousands of students already using SkillBistro to make the most of their college years.
