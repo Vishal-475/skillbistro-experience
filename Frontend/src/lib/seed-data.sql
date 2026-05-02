@@ -3,6 +3,19 @@
 -- Run this in Supabase SQL Editor
 -- ============================================
 
+-- Clean slate for re-runs (preserves profiles so you don't lose your login)
+DROP TABLE IF EXISTS mentors CASCADE;
+DROP TABLE IF EXISTS learning_paths CASCADE;
+DROP TABLE IF EXISTS career_matches CASCADE;
+DROP TABLE IF EXISTS savings_challenges CASCADE;
+DROP TABLE IF EXISTS transactions CASCADE;
+DROP TABLE IF EXISTS food_reviews CASCADE;
+DROP TABLE IF EXISTS food_spots CASCADE;
+DROP TABLE IF EXISTS sessions CASCADE;
+DROP TABLE IF EXISTS skill_matches CASCADE;
+DROP TABLE IF EXISTS user_skills CASCADE;
+DROP TABLE IF EXISTS skills CASCADE;
+
 -- =====================
 -- 1. PROFILES TABLE
 -- =====================
