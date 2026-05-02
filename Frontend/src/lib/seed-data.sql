@@ -3,6 +3,19 @@
 -- Run this in Supabase SQL Editor
 -- ============================================
 
+-- Clean slate for re-runs (preserves profiles so you don't lose your login)
+DROP TABLE IF EXISTS mentors CASCADE;
+DROP TABLE IF EXISTS learning_paths CASCADE;
+DROP TABLE IF EXISTS career_matches CASCADE;
+DROP TABLE IF EXISTS savings_challenges CASCADE;
+DROP TABLE IF EXISTS transactions CASCADE;
+DROP TABLE IF EXISTS food_reviews CASCADE;
+DROP TABLE IF EXISTS food_spots CASCADE;
+DROP TABLE IF EXISTS sessions CASCADE;
+DROP TABLE IF EXISTS skill_matches CASCADE;
+DROP TABLE IF EXISTS user_skills CASCADE;
+DROP TABLE IF EXISTS skills CASCADE;
+
 -- =====================
 -- 1. PROFILES TABLE
 -- =====================
@@ -98,7 +111,7 @@ CREATE TABLE IF NOT EXISTS food_spots (
   cuisine TEXT NOT NULL,
   description TEXT,
   rating NUMERIC(2,1) NOT NULL DEFAULT 4.0,
-  price_tier TEXT NOT NULL DEFAULT '$' CHECK (price_tier IN ('$', '$$', '$$$')),
+  price_tier TEXT NOT NULL DEFAULT '₹' CHECK (price_tier IN ('₹', '₹₹', '₹₹₹')),
   distance_minutes INTEGER NOT NULL DEFAULT 5,
   address TEXT,
   image_color TEXT DEFAULT '#FF9500',
@@ -208,32 +221,55 @@ ALTER TABLE career_matches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE learning_paths ENABLE ROW LEVEL SECURITY;
 ALTER TABLE mentors ENABLE ROW LEVEL SECURITY;
 
--- Allow public read access to shared data tables
+-- Basic Policies
+DROP POLICY IF EXISTS "Public read access" ON skills;
 CREATE POLICY "Public read access" ON skills FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON food_spots;
 CREATE POLICY "Public read access" ON food_spots FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON food_reviews;
 CREATE POLICY "Public read access" ON food_reviews FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON career_matches;
 CREATE POLICY "Public read access" ON career_matches FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON learning_paths;
 CREATE POLICY "Public read access" ON learning_paths FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON mentors;
 CREATE POLICY "Public read access" ON mentors FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public read access" ON savings_challenges;
 CREATE POLICY "Public read access" ON savings_challenges FOR SELECT USING (true);
 
--- Profile policies
+-- User Policies
+DROP POLICY IF EXISTS "Users can view all profiles" ON profiles;
 CREATE POLICY "Users can view all profiles" ON profiles FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
 
--- User skills policies
+DROP POLICY IF EXISTS "Public read user_skills" ON user_skills;
 CREATE POLICY "Public read user_skills" ON user_skills FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can manage own skills" ON user_skills;
 CREATE POLICY "Users can manage own skills" ON user_skills FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete own skills" ON user_skills;
 CREATE POLICY "Users can delete own skills" ON user_skills FOR DELETE USING (auth.uid() = user_id);
 
--- Skill matches policies
+DROP POLICY IF EXISTS "Public read skill_matches" ON skill_matches;
 CREATE POLICY "Public read skill_matches" ON skill_matches FOR SELECT USING (true);
 
--- Sessions policies
+DROP POLICY IF EXISTS "Public read sessions" ON sessions;
 CREATE POLICY "Public read sessions" ON sessions FOR SELECT USING (true);
 
 -- Transactions policies
+DROP POLICY IF EXISTS "Public read transactions" ON transactions;
 CREATE POLICY "Public read transactions" ON transactions FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can insert transactions" ON transactions;
 CREATE POLICY "Users can insert transactions" ON transactions FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- ============================================
@@ -266,57 +302,56 @@ ON CONFLICT (name) DO NOTHING;
 
 -- Food Spots
 INSERT INTO food_spots (name, cuisine, description, rating, price_tier, distance_minutes, address, image_color, is_trending, student_popular) VALUES
-  ('The Student Café', 'Café', 'Cozy café with the best lattes on campus. Free WiFi and study-friendly atmosphere.', 4.8, '$', 5, '123 University Ave', '#FF9500', true, true),
-  ('Campus Bistro', 'International', 'Diverse menu with options from around the world. Great lunch combos.', 4.5, '$$', 10, '456 College St', '#5856D6', false, true),
-  ('Noodle House', 'Asian', 'Authentic ramen and stir-fry bowls. Student discount on Tuesdays.', 4.7, '$', 8, '789 Market Rd', '#FF2D55', true, true),
-  ('Green Bowl', 'Healthy', 'Fresh salads, smoothie bowls, and grain bowls. Perfect for health-conscious students.', 4.6, '$$', 12, '321 Wellness Blvd', '#34C759', true, true),
-  ('Pizza Corner', 'Italian', 'Late-night slices and full pies. The go-to spot after study sessions.', 4.3, '$', 3, '555 Dorm Circle', '#FF9500', false, true),
-  ('Spice Route', 'Indian', 'Authentic curries, biryanis, and tandoori. Generous student portions.', 4.9, '$$', 15, '678 Flavor Lane', '#FF2D55', true, true),
-  ('Taco Fiesta', 'Mexican', 'Build-your-own tacos and burritos. Dollar taco Wednesdays!', 4.4, '$', 7, '234 Fiesta Dr', '#FF9500', false, true),
-  ('Sushi Express', 'Japanese', 'Quick and affordable sushi rolls. Great combo deals for lunch.', 4.2, '$$', 20, '890 Pacific Ave', '#007AFF', false, false);
+  ('Java Green', 'Café', 'The classic SRM hangout spot. Great for quick bites, coffee, and discussions.', 4.8, '₹', 2, 'Main Campus', '#FF9500', true, true),
+  ('Tech Park Canteen', 'South Indian', 'Affordable and reliable meals. Famous for their dosas and meals.', 4.5, '₹', 5, 'Tech Park', '#5856D6', false, true),
+  ('UB Canteen', 'Fast Food', 'Quick snacks and fast food options right next to University Building.', 4.7, '₹', 3, 'University Building', '#FF2D55', true, true),
+  ('SRM Hotel', 'Fine Dining', 'Premium dining experience. Great for when parents visit or special occasions.', 4.6, '₹₹₹', 15, 'SRM Campus Gate', '#34C759', false, false),
+  ('Potheri Food Street', 'Street Food', 'Late-night cravings, shawarmas, and juices. The go-to spot after study sessions.', 4.3, '₹', 10, 'Potheri', '#FF9500', true, true),
+  ('Abode', 'North Indian', 'Authentic curries, biryanis, and tandoori. Generous student portions.', 4.9, '₹₹', 12, 'Potheri', '#FF2D55', true, true),
+  ('Estancia Plaza', 'Multi-Cuisine', 'High-end cafes and restaurants. Good for weekend hangouts.', 4.4, '₹₹', 20, 'Estancia IT Park', '#007AFF', false, true);
 
 -- Food Reviews
 INSERT INTO food_reviews (spot_id, user_name, rating, comment, helpful_count) VALUES
-  ((SELECT id FROM food_spots WHERE name = 'The Student Café'), 'Alex M.', 5, 'Best study spot ever! The cold brew is incredible and the WiFi never drops.', 24),
-  ((SELECT id FROM food_spots WHERE name = 'The Student Café'), 'Sarah K.', 4, 'Love the atmosphere. Pastries are amazing, but it gets crowded during finals.', 18),
-  ((SELECT id FROM food_spots WHERE name = 'Noodle House'), 'Jamie L.', 5, 'The tonkotsu ramen here is legit. Reminds me of the real deal in Japan!', 31),
-  ((SELECT id FROM food_spots WHERE name = 'Noodle House'), 'Morgan P.', 4, 'Great flavors, decent portions. Tuesday discounts make it even better.', 12),
-  ((SELECT id FROM food_spots WHERE name = 'Green Bowl'), 'Chris W.', 5, 'Finally a healthy option that actually tastes good! The acai bowl is a must-try.', 27),
-  ((SELECT id FROM food_spots WHERE name = 'Spice Route'), 'Priya R.', 5, 'Authentic Indian food at student-friendly prices. The butter chicken is perfection.', 45),
-  ((SELECT id FROM food_spots WHERE name = 'Pizza Corner'), 'Tom H.', 4, 'Perfect late-night fuel. Nothing fancy, just good honest pizza slices.', 15),
-  ((SELECT id FROM food_spots WHERE name = 'Campus Bistro'), 'Emma J.', 4, 'Nice variety of cuisines. The lunch combo deal is great value.', 9);
+  ((SELECT id FROM food_spots WHERE name = 'Java Green'), 'Vishal K.', 5, 'Best study spot ever! The cold coffee is incredible and the WiFi never drops.', 24),
+  ((SELECT id FROM food_spots WHERE name = 'Java Green'), 'Sarah M.', 4, 'Love the atmosphere. Pastries are amazing, but it gets crowded during internals.', 18),
+  ((SELECT id FROM food_spots WHERE name = 'Tech Park Canteen'), 'Rahul P.', 5, 'The masala dosa here is legit. Reminds me of home!', 31),
+  ((SELECT id FROM food_spots WHERE name = 'UB Canteen'), 'Morgan P.', 4, 'Great flavors, decent portions. Perfect between classes.', 12),
+  ((SELECT id FROM food_spots WHERE name = 'SRM Hotel'), 'Chris W.', 5, 'Finally a premium option. The buffet is a must-try.', 27),
+  ((SELECT id FROM food_spots WHERE name = 'Abode'), 'Priya R.', 5, 'Authentic North Indian food at student-friendly prices. The butter chicken is perfection.', 45),
+  ((SELECT id FROM food_spots WHERE name = 'Potheri Food Street'), 'Tom H.', 4, 'Perfect late-night fuel. The shawarma is the best around.', 15),
+  ((SELECT id FROM food_spots WHERE name = 'Estancia Plaza'), 'Emma J.', 4, 'Nice variety of cafes. The weekend vibe is great.', 9);
 
 -- Transactions (generic, not tied to a specific user for demo)
 INSERT INTO transactions (amount, category, description, transaction_type, transaction_date) VALUES
-  (1500.00, 'Income', 'Monthly Allowance', 'income', CURRENT_DATE - INTERVAL '1 day'),
-  (45.50, 'Food & Dining', 'Grocery shopping at FreshMart', 'expense', CURRENT_DATE - INTERVAL '1 day'),
-  (12.99, 'Food & Dining', 'Lunch at Campus Bistro', 'expense', CURRENT_DATE - INTERVAL '2 days'),
-  (600.00, 'Rent', 'Monthly rent payment', 'expense', CURRENT_DATE - INTERVAL '3 days'),
-  (29.99, 'Entertainment', 'Spotify + Netflix subscriptions', 'expense', CURRENT_DATE - INTERVAL '4 days'),
-  (85.00, 'Books & Supplies', 'Data Structures textbook', 'expense', CURRENT_DATE - INTERVAL '5 days'),
-  (8.50, 'Food & Dining', 'Coffee at The Student Café', 'expense', CURRENT_DATE - INTERVAL '5 days'),
-  (200.00, 'Income', 'Freelance web design project', 'income', CURRENT_DATE - INTERVAL '6 days'),
-  (35.00, 'Transportation', 'Monthly bus pass', 'expense', CURRENT_DATE - INTERVAL '7 days'),
-  (22.00, 'Food & Dining', 'Dinner at Noodle House', 'expense', CURRENT_DATE - INTERVAL '8 days'),
-  (15.00, 'Entertainment', 'Movie tickets', 'expense', CURRENT_DATE - INTERVAL '9 days'),
-  (50.00, 'Income', 'Tutoring session payment', 'income', CURRENT_DATE - INTERVAL '10 days'),
-  (42.00, 'Food & Dining', 'Weekly grocery run', 'expense', CURRENT_DATE - INTERVAL '11 days'),
-  (18.50, 'Food & Dining', 'Pizza Corner order', 'expense', CURRENT_DATE - INTERVAL '12 days'),
-  (120.00, 'Shopping', 'New backpack for semester', 'expense', CURRENT_DATE - INTERVAL '14 days');
+  (15000.00, 'Income', 'Monthly Allowance', 'income', CURRENT_DATE - INTERVAL '1 day'),
+  (450.50, 'Food & Dining', 'Grocery shopping at Potheri', 'expense', CURRENT_DATE - INTERVAL '1 day'),
+  (120.00, 'Food & Dining', 'Lunch at Tech Park Canteen', 'expense', CURRENT_DATE - INTERVAL '2 days'),
+  (8000.00, 'Rent', 'Monthly PG/Hostel Rent', 'expense', CURRENT_DATE - INTERVAL '3 days'),
+  (299.00, 'Entertainment', 'Spotify + Netflix subscriptions', 'expense', CURRENT_DATE - INTERVAL '4 days'),
+  (850.00, 'Books & Supplies', 'Data Structures textbook', 'expense', CURRENT_DATE - INTERVAL '5 days'),
+  (80.50, 'Food & Dining', 'Coffee at Java Green', 'expense', CURRENT_DATE - INTERVAL '5 days'),
+  (2000.00, 'Income', 'Freelance web design project', 'income', CURRENT_DATE - INTERVAL '6 days'),
+  (350.00, 'Transportation', 'Monthly Local Train Pass', 'expense', CURRENT_DATE - INTERVAL '7 days'),
+  (220.00, 'Food & Dining', 'Dinner at Abode', 'expense', CURRENT_DATE - INTERVAL '8 days'),
+  (150.00, 'Entertainment', 'Movie tickets', 'expense', CURRENT_DATE - INTERVAL '9 days'),
+  (500.00, 'Income', 'Tutoring session payment', 'income', CURRENT_DATE - INTERVAL '10 days'),
+  (420.00, 'Food & Dining', 'Weekly snacks run', 'expense', CURRENT_DATE - INTERVAL '11 days'),
+  (180.50, 'Food & Dining', 'Potheri Street Food order', 'expense', CURRENT_DATE - INTERVAL '12 days'),
+  (1200.00, 'Shopping', 'New backpack for semester', 'expense', CURRENT_DATE - INTERVAL '14 days');
 
 -- Savings Challenges
 INSERT INTO savings_challenges (title, description, target_amount, current_amount, weeks_remaining, icon) VALUES
-  ('Coffee Break Challenge', 'Skip your daily coffee 3 times a week to save $60 this month!', 60.00, 45.00, 3, '☕'),
-  ('No Takeout Week', 'Cook all your meals for one week and save on delivery fees.', 40.00, 28.00, 1, '🍳'),
-  ('Textbook Swap', 'Buy used textbooks or use library copies instead of new ones.', 150.00, 85.00, 6, '📚'),
-  ('Transit Saver', 'Walk or bike for short trips instead of rideshare this month.', 30.00, 12.00, 4, '🚲');
+  ('Coffee Break Challenge', 'Skip your daily cafe coffee 3 times a week to save ₹1500 this month!', 1500.00, 450.00, 3, '☕'),
+  ('No Takeout Week', 'Eat at the mess/hostel for one week and save on Zomato/Swiggy fees.', 800.00, 280.00, 1, '🍳'),
+  ('Textbook Swap', 'Buy used textbooks or use SRM library copies instead of new ones.', 2500.00, 850.00, 6, '📚'),
+  ('Transit Saver', 'Walk or use the campus shuttle instead of autos this month.', 500.00, 120.00, 4, '🚲');
 
 -- Career Matches
 INSERT INTO career_matches (title, description, match_score, salary_range, growth_outlook, skills_required) VALUES
-  ('UX/UI Designer', 'Create intuitive and visually appealing interfaces. Your skills in design, psychology, and coding make you an excellent match for UX/UI design.', 98, '$65K - $120K', 'Very High', ARRAY['Design', 'User Research', 'Prototyping', 'HTML/CSS', 'Figma']),
-  ('Full-Stack Developer', 'Build complete web applications from frontend to backend. Strong demand in tech industry with excellent growth potential.', 92, '$75K - $140K', 'Very High', ARRAY['JavaScript', 'React', 'Node.js', 'SQL', 'Git']),
-  ('Data Scientist', 'Analyze complex data sets to drive business decisions. Combines statistics, programming, and domain expertise.', 85, '$80K - $150K', 'High', ARRAY['Python', 'Statistics', 'Machine Learning', 'SQL', 'Visualization']),
-  ('Product Manager', 'Lead product strategy and development. Bridge between business, design, and engineering teams.', 78, '$90K - $160K', 'High', ARRAY['Strategy', 'Communication', 'Analytics', 'Agile', 'User Research']);
+  ('UX/UI Designer', 'Create intuitive and visually appealing interfaces. Your skills in design, psychology, and coding make you an excellent match for UX/UI design.', 98, '₹6 LPA - ₹15 LPA', 'Very High', ARRAY['Design', 'User Research', 'Prototyping', 'HTML/CSS', 'Figma']),
+  ('Full-Stack Developer', 'Build complete web applications from frontend to backend. Strong demand in tech industry with excellent growth potential.', 92, '₹8 LPA - ₹20 LPA', 'Very High', ARRAY['JavaScript', 'React', 'Node.js', 'SQL', 'Git']),
+  ('Data Scientist', 'Analyze complex data sets to drive business decisions. Combines statistics, programming, and domain expertise.', 85, '₹10 LPA - ₹25 LPA', 'High', ARRAY['Python', 'Statistics', 'Machine Learning', 'SQL', 'Visualization']),
+  ('Product Manager', 'Lead product strategy and development. Bridge between business, design, and engineering teams.', 78, '₹12 LPA - ₹30 LPA', 'High', ARRAY['Strategy', 'Communication', 'Analytics', 'Agile', 'User Research']);
 
 -- Learning Paths (for UX/UI Designer career)
 INSERT INTO learning_paths (career_match_id, step_number, title, duration, status) VALUES

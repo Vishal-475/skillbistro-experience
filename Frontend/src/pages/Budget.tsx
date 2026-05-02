@@ -39,7 +39,7 @@ const Budget = () => {
               {overviewLoading ? (
                 <div className="h-10 w-32 bg-gray-200 animate-pulse rounded" />
               ) : (
-                <h3 className="text-3xl font-bold text-gray-900">${overview?.balance.toFixed(2) || '0.00'}</h3>
+                <h3 className="text-3xl font-bold text-gray-900">₹{overview?.balance.toFixed(2) || '0.00'}</h3>
               )}
             </CardContent>
           </Card>
@@ -55,7 +55,7 @@ const Budget = () => {
               {overviewLoading ? (
                 <div className="h-10 w-32 bg-gray-100 animate-pulse rounded" />
               ) : (
-                <h3 className="text-2xl font-bold">${overview?.income.toFixed(2) || '0.00'}</h3>
+                <h3 className="text-2xl font-bold">₹{overview?.income.toFixed(2) || '0.00'}</h3>
               )}
             </CardContent>
           </Card>
@@ -71,7 +71,7 @@ const Budget = () => {
               {overviewLoading ? (
                 <div className="h-10 w-32 bg-gray-100 animate-pulse rounded" />
               ) : (
-                <h3 className="text-2xl font-bold">${overview?.expenses.toFixed(2) || '0.00'}</h3>
+                <h3 className="text-2xl font-bold">₹{overview?.expenses.toFixed(2) || '0.00'}</h3>
               )}
             </CardContent>
           </Card>
@@ -101,10 +101,10 @@ const Budget = () => {
                           <span className="font-medium">{cat.category}</span>
                           <div className="flex items-center gap-2">
                             <span className="text-gray-500">{cat.percent}%</span>
-                            <span className="font-bold">${cat.amount.toFixed(2)}</span>
+                            <span className="font-bold">₹{cat.amount.toFixed(2)}</span>
                           </div>
                         </div>
-                        <Progress value={cat.percent} className="h-2 bg-gray-100" indicatorClassName="bg-skillbistro-green" />
+                        <Progress value={cat.percent} className="h-2 bg-gray-100" />
                       </div>
                     ))}
                   </div>
@@ -142,7 +142,7 @@ const Budget = () => {
                           </div>
                         </div>
                         <div className={`font-semibold ${tx.transaction_type === 'income' ? 'text-skillbistro-blue' : 'text-gray-900'}`}>
-                          {tx.transaction_type === 'income' ? '+' : '-'}${parseFloat(tx.amount).toFixed(2)}
+                          {tx.transaction_type === 'income' ? '+' : '-'}₹{parseFloat(tx.amount).toFixed(2)}
                         </div>
                       </div>
                     ))}
@@ -186,10 +186,10 @@ const Budget = () => {
                         <p className="text-xs text-gray-500 line-clamp-2">{challenge.description}</p>
                         <div className="space-y-1">
                           <div className="flex justify-between text-xs font-medium">
-                            <span>${challenge.current_amount} saved</span>
-                            <span>Goal: ${challenge.target_amount}</span>
+                            <span>₹{challenge.current_amount} saved</span>
+                            <span>Goal: ₹{challenge.target_amount}</span>
                           </div>
-                          <Progress value={percent} className="h-1.5" indicatorClassName="bg-skillbistro-green" />
+                          <Progress value={percent} className="h-1.5 [&>div]:bg-skillbistro-green" />
                         </div>
                       </div>
                     );
@@ -210,7 +210,7 @@ const Budget = () => {
               <CardContent className="space-y-4">
                 <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex gap-3">
                   <div className="mt-0.5"><Target className="h-4 w-4 text-skillbistro-blue" /></div>
-                  <p className="text-sm text-gray-600">You're spending 35% of your budget on food. Try joining the "No Takeout Week" challenge to save ~$40!</p>
+                  <p className="text-sm text-gray-600">You're spending 35% of your budget on food. Try joining the "No Takeout Week" challenge to save ~₹800!</p>
                 </div>
                 <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex gap-3">
                   <div className="mt-0.5"><Target className="h-4 w-4 text-skillbistro-blue" /></div>

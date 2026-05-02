@@ -29,7 +29,7 @@ const FoodDiscovery = () => {
       
       <main className="pt-28 pb-16 section-padding relative z-10 max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Campus Food Discovery</h1>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">SRM Food Discovery</h1>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">Find the best student-friendly spots, filter by your budget, and see what's trending right now.</p>
         </div>
 
@@ -148,7 +148,7 @@ const FoodDiscovery = () => {
             <Card className="glass-card bg-gradient-to-br from-skillbistro-orange/10 to-transparent border-skillbistro-orange/20 mt-8">
               <CardContent className="p-6">
                 <h3 className="font-bold text-lg mb-2">Student Deals</h3>
-                <p className="text-sm text-gray-600 mb-4">Show your ID at Noodle House for 15% off on Tuesdays!</p>
+                <p className="text-sm text-gray-600 mb-4">Show your SRM ID at Potheri Food Street for 10% off on Tuesdays!</p>
                 <Button className="w-full bg-skillbistro-orange hover:bg-skillbistro-orange/90 text-white">View All Deals</Button>
               </CardContent>
             </Card>
