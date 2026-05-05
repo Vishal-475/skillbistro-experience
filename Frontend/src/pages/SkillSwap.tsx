@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ThreeJSBackground from '@/components/ThreeJSBackground';
-import { useSkills, useSkillMatches, useSessions } from '@/hooks/use-skills';
+import { useSkills, useSkillMatches, useSessions, useBookSession } from '@/hooks/use-skills';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar, Clock, RefreshCw, Star, UserPlus } from 'lucide-react';
+import { toast } from 'sonner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -17,6 +18,34 @@ const SkillSwap = () => {
   const { data: matches, isLoading: matchesLoading } = useSkillMatches();
   const { data: sessions, isLoading: sessionsLoading } = useSessions();
   const [activeTab, setActiveTab] = useState('matches');
+  
+  const { mutate: bookSession, isPending: isBooking } = useBookSession();
+
+  const handleBookSession = (match: any) => {
+    if (!user) {
+      toast.error('Please log in to book a session');
+      return;
+    }
+
+    // Determine who is the teacher and who is the student
+    const isTeacher = match.match_type === 'student'; // If they want to learn, I am the teacher
+    const teacherId = isTeacher ? user.id : match.matched_user_id;
+    const studentId = isTeacher ? match.matched_user_id : user.id;
+
+    bookSession({
+      teacherId,
+      studentId,
+      skillId: match.skill_id
+    }, {
+      onSuccess: () => {
+        toast.success(`Session booked successfully with ${match.matched_user?.first_name}!`);
+        setActiveTab('sessions');
+      },
+      onError: (error) => {
+        toast.error('Failed to book session', { description: error.message });
+      }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -145,8 +174,12 @@ const SkillSwap = () => {
                               </div>
                             </div>
                           </div>
-                          <Button className="w-full sm:w-auto bg-skillbistro-blue hover:bg-skillbistro-blue/90 text-white">
-                            Connect
+                          <Button 
+                            className="w-full sm:w-auto bg-skillbistro-blue hover:bg-skillbistro-blue/90 text-white"
+                            onClick={() => handleBookSession(match)}
+                            disabled={isBooking}
+                          >
+                            {isBooking ? 'Connecting...' : 'Connect'}
                           </Button>
                         </CardContent>
                       </Card>

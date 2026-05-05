@@ -8,6 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Target, ArrowUpRight, ArrowDownRight, DollarSign, Wallet, Target as GoalIcon } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from 'recharts';
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
 const Budget = () => {
   const { data: transactions, isLoading: txLoading } = useTransactions();
@@ -94,19 +97,30 @@ const Budget = () => {
                 ) : overview?.categories.length === 0 ? (
                   <p className="text-gray-500 text-center py-4">No expenses recorded yet.</p>
                 ) : (
-                  <div className="space-y-6">
-                    {overview?.categories.map((cat, i) => (
-                      <div key={cat.category} className="space-y-2 animate-fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
-                        <div className="flex justify-between text-sm">
-                          <span className="font-medium">{cat.category}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-gray-500">{cat.percent}%</span>
-                            <span className="font-bold">₹{cat.amount.toFixed(2)}</span>
-                          </div>
-                        </div>
-                        <Progress value={cat.percent} className="h-2 bg-gray-100" />
-                      </div>
-                    ))}
+                  <div className="h-[300px] w-full animate-fade-in">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={overview?.categories}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={90}
+                          paddingAngle={5}
+                          dataKey="amount"
+                          nameKey="category"
+                        >
+                          {overview?.categories.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <RechartsTooltip 
+                          formatter={(value: number) => [`₹${value.toFixed(2)}`, 'Amount']}
+                          contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                        />
+                        <Legend verticalAlign="bottom" height={36} />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
                 )}
               </CardContent>
