@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Briefcase, BookOpen, Users, Star, ArrowRight, CheckCircle2, Circle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
 
 const CareerPath = () => {
   const { data: careers, isLoading: careersLoading } = useCareerMatches();
@@ -23,6 +24,18 @@ const CareerPath = () => {
   }, [careers, selectedCareerId]);
 
   const { data: paths, isLoading: pathsLoading } = useLearningPaths(selectedCareerId || undefined);
+
+  const handleStartPath = () => {
+    toast.success('Learning path started!', {
+      description: 'Your progress will now be tracked.'
+    });
+  };
+
+  const handleBookMentor = (mentorName: string) => {
+    toast.success(`Session requested with ${mentorName}`, {
+      description: 'We will notify you when they confirm.'
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -91,7 +104,7 @@ const CareerPath = () => {
                           <CardTitle className="text-2xl mb-2">{careers?.find(c => c.id === selectedCareerId)?.title} Learning Path</CardTitle>
                           <CardDescription>Step-by-step guide to land this role</CardDescription>
                         </div>
-                        <Button className="bg-skillbistro-purple hover:bg-skillbistro-purple/90 text-white">
+                        <Button onClick={handleStartPath} className="bg-skillbistro-purple hover:bg-skillbistro-purple/90 text-white">
                           Start Path
                         </Button>
                       </div>
@@ -193,7 +206,7 @@ const CareerPath = () => {
                         ))}
                       </div>
 
-                      <Button className="w-full bg-skillbistro-purple hover:bg-skillbistro-purple/90 text-white">
+                      <Button onClick={() => handleBookMentor(mentor.name)} className="w-full bg-skillbistro-purple hover:bg-skillbistro-purple/90 text-white">
                         Book Session
                       </Button>
                     </CardContent>

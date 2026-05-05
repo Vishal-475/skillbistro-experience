@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 
 export function useTransactions() {
@@ -58,6 +58,33 @@ export function useSavingsChallenges() {
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data;
+    },
+  });
+}
+
+export function useAddTransaction() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (transaction: { amount: number; category: string; description: string; transaction_type: 'income' | 'expense' }) => {
+      const { data, error } = await supabase
+        .from('transactions')
+        .insert([{
+          amount: transaction.amount,
+          category: transaction.category,
+          description: transaction.description,
+          transaction_type: transaction.transaction_type,
+          transaction_date: new Date().toISOString().split('T')[0]
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['budget-overview'] });
     },
   });
 }

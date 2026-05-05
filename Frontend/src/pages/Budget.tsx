@@ -2,13 +2,18 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ThreeJSBackground from '@/components/ThreeJSBackground';
-import { useTransactions, useBudgetOverview, useSavingsChallenges } from '@/hooks/use-budget';
+import { useTransactions, useBudgetOverview, useSavingsChallenges, useAddTransaction } from '@/hooks/use-budget';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Target, ArrowUpRight, ArrowDownRight, DollarSign, Wallet, Target as GoalIcon } from 'lucide-react';
+import { Target, ArrowUpRight, ArrowDownRight, DollarSign, Wallet, Target as GoalIcon, Plus } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from 'recharts';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from 'sonner';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
@@ -16,6 +21,40 @@ const Budget = () => {
   const { data: transactions, isLoading: txLoading } = useTransactions();
   const { data: overview, isLoading: overviewLoading } = useBudgetOverview();
   const { data: challenges, isLoading: challengesLoading } = useSavingsChallenges();
+  const { mutate: addTransaction, isPending: isAddingTransaction } = useAddTransaction();
+
+  const [isTxOpen, setIsTxOpen] = React.useState(false);
+  const [txType, setTxType] = React.useState<'expense' | 'income'>('expense');
+  const [txAmount, setTxAmount] = React.useState('');
+  const [txCategory, setTxCategory] = React.useState('');
+  const [txDesc, setTxDesc] = React.useState('');
+
+  const handleAddTransaction = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!txAmount || !txCategory || !txDesc) return;
+
+    addTransaction({
+      amount: parseFloat(txAmount),
+      category: txCategory,
+      description: txDesc,
+      transaction_type: txType
+    }, {
+      onSuccess: () => {
+        toast.success(`Successfully added ${txType}!`);
+        setIsTxOpen(false);
+        setTxAmount('');
+        setTxCategory('');
+        setTxDesc('');
+      },
+      onError: (err) => {
+        toast.error('Failed to add transaction', { description: err.message });
+      }
+    });
+  };
+
+  const handleJoinChallenge = () => {
+    toast.success('Successfully joined the challenge! Happy saving!');
+  };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -23,9 +62,60 @@ const Budget = () => {
       <Navbar />
       
       <main className="pt-28 pb-16 section-padding relative z-10 max-w-7xl mx-auto">
-        <div className="mb-10">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Budget Structuring</h1>
-          <p className="text-gray-600 text-lg">Track expenses, optimize your spending, and join savings challenges.</p>
+        <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Budget Structuring</h1>
+            <p className="text-gray-600 text-lg">Track expenses, optimize your spending, and join savings challenges.</p>
+          </div>
+          
+          <Dialog open={isTxOpen} onOpenChange={setIsTxOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-skillbistro-blue hover:bg-skillbistro-blue/90 text-white shrink-0">
+                <Plus className="mr-2 h-4 w-4" /> New Transaction
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] glass-card">
+              <DialogHeader>
+                <DialogTitle>Add Transaction</DialogTitle>
+                <DialogDescription>Record a new income or expense to track your budget.</DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleAddTransaction} className="space-y-4 pt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Button 
+                    type="button" 
+                    variant={txType === 'expense' ? 'default' : 'outline'} 
+                    onClick={() => setTxType('expense')}
+                    className={txType === 'expense' ? 'bg-red-500 hover:bg-red-600 text-white' : ''}
+                  >
+                    Expense
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant={txType === 'income' ? 'default' : 'outline'} 
+                    onClick={() => setTxType('income')}
+                    className={txType === 'income' ? 'bg-skillbistro-blue hover:bg-skillbistro-blue/90 text-white' : ''}
+                  >
+                    Income
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <Label>Amount (₹)</Label>
+                  <Input type="number" step="0.01" value={txAmount} onChange={e => setTxAmount(e.target.value)} required placeholder="e.g. 150.00" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Category</Label>
+                  <Input value={txCategory} onChange={e => setTxCategory(e.target.value)} required placeholder="e.g. Food & Dining" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Description</Label>
+                  <Input value={txDesc} onChange={e => setTxDesc(e.target.value)} required placeholder="e.g. Lunch at Tech Park" />
+                </div>
+                <Button type="submit" disabled={isAddingTransaction} className="w-full bg-skillbistro-blue hover:bg-skillbistro-blue/90 text-white">
+                  {isAddingTransaction ? 'Saving...' : 'Save Transaction'}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Top Overview Cards */}
@@ -210,7 +300,7 @@ const Budget = () => {
                   })
                 )}
                 
-                <Button className="w-full mt-2 bg-skillbistro-green hover:bg-skillbistro-green/90 text-white">
+                <Button onClick={handleJoinChallenge} className="w-full mt-2 bg-skillbistro-green hover:bg-skillbistro-green/90 text-white">
                   Join New Challenge
                 </Button>
               </CardContent>

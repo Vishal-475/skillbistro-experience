@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MapPin, Search, Star, TrendingUp, Filter, DollarSign } from 'lucide-react';
+import { toast } from 'sonner';
 
 const FoodDiscovery = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,6 +22,19 @@ const FoodDiscovery = () => {
     spot.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     spot.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleSpotClick = (spotName: string) => {
+    navigator.clipboard.writeText(`${window.location.origin}/food-discovery?spot=${encodeURIComponent(spotName)}`);
+    toast.success('Link copied to clipboard!', {
+      description: `Share ${spotName} with your friends.`
+    });
+  };
+
+  const handleViewDeals = () => {
+    toast('Checking deals...', {
+      description: 'No new deals available at this time. Check back later!'
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -81,7 +95,12 @@ const FoodDiscovery = () => {
             ) : (
               <div className="grid md:grid-cols-2 gap-6">
                 {filteredSpots?.map((spot: any, i) => (
-                  <Card key={spot.id} className="glass-card overflow-hidden hover:shadow-lg transition-all animate-fade-in group" style={{ animationDelay: `${i * 0.1}s` }}>
+                  <Card 
+                    key={spot.id} 
+                    className="glass-card overflow-hidden hover:shadow-lg transition-all animate-fade-in group cursor-pointer" 
+                    style={{ animationDelay: `${i * 0.1}s` }}
+                    onClick={() => handleSpotClick(spot.name)}
+                  >
                     <div 
                       className="h-32 w-full relative"
                       style={{ backgroundColor: spot.image_color || '#FF9500' }}
@@ -131,7 +150,12 @@ const FoodDiscovery = () => {
             ) : (
               <div className="space-y-4">
                 {trendingSpots?.map((spot: any, i) => (
-                  <div key={spot.id} className="glass-card rounded-xl p-4 flex gap-4 items-center animate-fade-in cursor-pointer hover:bg-white/60 transition-colors" style={{ animationDelay: `${i * 0.1}s` }}>
+                  <div 
+                    key={spot.id} 
+                    className="glass-card rounded-xl p-4 flex gap-4 items-center animate-fade-in cursor-pointer hover:bg-white/60 transition-colors" 
+                    style={{ animationDelay: `${i * 0.1}s` }}
+                    onClick={() => handleSpotClick(spot.name)}
+                  >
                     <div className="w-16 h-16 rounded-lg flex-shrink-0" style={{ backgroundColor: spot.image_color || '#FF9500' }} />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold text-sm truncate">{spot.name}</h4>
@@ -149,7 +173,7 @@ const FoodDiscovery = () => {
               <CardContent className="p-6">
                 <h3 className="font-bold text-lg mb-2">Student Deals</h3>
                 <p className="text-sm text-gray-600 mb-4">Show your SRM ID at Potheri Food Street for 10% off on Tuesdays!</p>
-                <Button className="w-full bg-skillbistro-orange hover:bg-skillbistro-orange/90 text-white">View All Deals</Button>
+                <Button onClick={handleViewDeals} className="w-full bg-skillbistro-orange hover:bg-skillbistro-orange/90 text-white">View All Deals</Button>
               </CardContent>
             </Card>
           </div>

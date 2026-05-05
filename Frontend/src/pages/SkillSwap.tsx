@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ThreeJSBackground from '@/components/ThreeJSBackground';
-import { useSkills, useSkillMatches, useSessions, useBookSession } from '@/hooks/use-skills';
+import { useSkills, useSkillMatches, useSessions, useBookSession, useCompleteSession } from '@/hooks/use-skills';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -20,6 +20,7 @@ const SkillSwap = () => {
   const [activeTab, setActiveTab] = useState('matches');
   
   const { mutate: bookSession, isPending: isBooking } = useBookSession();
+  const { mutate: completeSession, isPending: isCompleting } = useCompleteSession();
 
   const handleBookSession = (match: any) => {
     if (!user) {
@@ -43,6 +44,17 @@ const SkillSwap = () => {
       },
       onError: (error) => {
         toast.error('Failed to book session', { description: error.message });
+      }
+    });
+  };
+
+  const handleCompleteSession = (sessionId: string, creditsExchanged: number) => {
+    completeSession(sessionId, {
+      onSuccess: () => {
+        toast.success(`Session completed! ${creditsExchanged} Time Credits were exchanged.`);
+      },
+      onError: (error) => {
+        toast.error('Failed to complete session', { description: error.message });
       }
     });
   };
@@ -230,8 +242,17 @@ const SkillSwap = () => {
                           </div>
                         </div>
                         <div className="mt-4 flex justify-end gap-2">
-                          <Button variant="outline" size="sm">Reschedule</Button>
-                          <Button size="sm" className="bg-skillbistro-blue hover:bg-skillbistro-blue/90 text-white">Join Meeting</Button>
+                          {session.status === 'upcoming' ? (
+                            <>
+                              <Button variant="outline" size="sm">Reschedule</Button>
+                              <Button size="sm" className="bg-skillbistro-blue hover:bg-skillbistro-blue/90 text-white" onClick={() => window.open('https://meet.google.com', '_blank')}>Join Meeting</Button>
+                              <Button size="sm" variant="secondary" onClick={() => handleCompleteSession(session.id, session.credits_exchanged)} disabled={isCompleting} className="bg-green-100 text-green-700 hover:bg-green-200">
+                                {isCompleting ? 'Completing...' : 'Mark Complete'}
+                              </Button>
+                            </>
+                          ) : (
+                            <Button variant="outline" size="sm" disabled>Completed</Button>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
