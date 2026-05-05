@@ -32,6 +32,17 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [profileData, setProfileData] = useState<any>(null);
 
+  const presetAvatars = [
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Jude",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Jack",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Avery",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Luna",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Sam"
+  ];
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -168,9 +179,21 @@ const Profile = () => {
                       name="avatar_url"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="flex items-center gap-2"><ImageIcon className="h-4 w-4" /> Avatar Image URL</FormLabel>
+                          <FormLabel className="flex items-center gap-2"><ImageIcon className="h-4 w-4" /> Choose an Avatar</FormLabel>
                           <FormControl>
-                            <Input placeholder="https://example.com/avatar.jpg" {...field} />
+                            <div className="grid grid-cols-4 gap-4 pt-2">
+                              {presetAvatars.map((url) => (
+                                <div 
+                                  key={url}
+                                  onClick={() => field.onChange(url)}
+                                  className={`cursor-pointer rounded-full p-1 transition-all ${field.value === url ? 'ring-4 ring-skillbistro-blue bg-skillbistro-blue/10' : 'hover:bg-gray-100'}`}
+                                >
+                                  <Avatar className="h-12 w-12 mx-auto">
+                                    <AvatarImage src={url} alt="preset avatar" />
+                                  </Avatar>
+                                </div>
+                              ))}
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
