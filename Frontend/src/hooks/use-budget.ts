@@ -67,9 +67,13 @@ export function useAddTransaction() {
 
   return useMutation({
     mutationFn: async (transaction: { amount: number; category: string; description: string; transaction_type: 'income' | 'expense' }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('You must be logged in to add a transaction');
+
       const { data, error } = await supabase
         .from('transactions')
         .insert([{
+          user_id: user.id,
           amount: transaction.amount,
           category: transaction.category,
           description: transaction.description,
